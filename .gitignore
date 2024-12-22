@@ -1,0 +1,4 @@
+build.bat
+node_modules
+.vscode
+dist

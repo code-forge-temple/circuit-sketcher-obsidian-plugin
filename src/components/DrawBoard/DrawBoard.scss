@@ -1,0 +1,14 @@
+@use '~circuit-sketcher-core/dist/variables.scss' as vars;
+
+.circuit-sketcher-plugin .canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .canvas {
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(vars.$circuit-sketcher-highlight-color, 0.5) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+}

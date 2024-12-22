@@ -1,0 +1,32 @@
+@use '~circuit-sketcher-core/dist/variables.scss' as vars;
+
+.circuit-sketcher-plugin {
+  font-family: vars.$circuit-sketcher-font;
+  width: 100%;
+  height: 100%;
+
+  .spinner {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    vertical-align: text-bottom;
+    border: .25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-anim .75s linear infinite;
+    color: vars.$circuit-sketcher-highlight-color;
+  }
+
+  .spinner-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes spinner-anim {
+  to {
+    transform: rotate(360deg);
+  }
+}
