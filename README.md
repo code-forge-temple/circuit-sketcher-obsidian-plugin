@@ -61,5 +61,7 @@ A plugin for Obsidian to draw circuits on a canvas.
     - You can reuse the node by right-clicking on the canvas and selecting `Add Node from Library`.
     - The connections between circuit nodes can be done by drag-and-dropping one port to the destination port (if it is a compatible port).
 
+      https://github.com/user-attachments/assets/0fa80533-857d-47c8-913f-1f46e923117c
+
 ## License
 This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for more details.
