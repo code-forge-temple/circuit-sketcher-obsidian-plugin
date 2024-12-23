@@ -3,7 +3,7 @@
     "name": "Circuit Sketcher",
     "version": "1.0.0",
     "minAppVersion": "0.15.0",
-    "description": "A plugin for Obsidian to draw circuits on a canvas, based on circuit-sketcher-core.",
+    "description": "A plugin for drawing circuits on a canvas, based on circuit-sketcher-core.",
     "author": "Code Forge Temple",
     "authorUrl": "https://github.com/code-forge-temple",
     "isDesktopOnly": true
