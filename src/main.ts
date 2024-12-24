@@ -47,16 +47,15 @@ export default class CircuitSketcherPlugin extends Plugin {
         // Add a command to create a new `.circuit-sketcher` file
         this.addCommand({
             id: "circuit-sketcher-create-new",
-            name: "Create New Circuit Sketcher File",
+            name: "Create New Circuit File",
             callback: this.createNewCircuitSketcher,
         });
 
 
-        this.addRibbonIcon('circuit', 'Create New Circuit Sketcher', this.createNewCircuitSketcher);
+        this.addRibbonIcon('circuit', 'Create New Circuit Sketcher File', this.createNewCircuitSketcher);
     }
 
     async onunload () {
-        this.app.workspace.detachLeavesOfType(CIRCUIT_VIEW_TYPE);
     }
 
     public fileName: string = "";
@@ -99,7 +98,12 @@ export default class CircuitSketcherPlugin extends Plugin {
 
         const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
 
-        return await this.app.vault.read(libraryFile as TFile);
+        //return await this.app.vault.read(libraryFile as TFile);
+        if (libraryFile instanceof TFile) {
+            return await this.app.vault.read(libraryFile);
+        }
+
+        throw new Error("Library file is not a valid TFile");
     }
 
     public async setLibraryFile (content: string): Promise<void> {
@@ -112,6 +116,11 @@ export default class CircuitSketcherPlugin extends Plugin {
 
         const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
 
-        await this.app.vault.modify(libraryFile as TFile, content);
+        if (libraryFile instanceof TFile) {
+            await this.app.vault.modify(libraryFile, content);
+        } else {
+            throw new Error("Library file is not a valid TFile");
+        }
+        //await this.app.vault.modify(libraryFile as TFile, content);
     }
 }

@@ -18,6 +18,7 @@ const CANVAS_ID = "circuit-board";
 export const DrawBoard = ({fileContents}: DrawBoardProps) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const resizeTimeoutRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -39,12 +40,18 @@ export const DrawBoard = ({fileContents}: DrawBoardProps) => {
         }, 300);
     };
 
-
     useEffect(() => {
-        window.addEventListener("resize", handleResize);
+        const observer = new ResizeObserver(handleResize);
+        const currentContainer = containerRef.current;
+
+        if (currentContainer) {
+            observer.observe(currentContainer);
+        }
 
         return () => {
-            window.removeEventListener("resize", handleResize);
+            if (currentContainer) {
+                observer.unobserve(currentContainer);
+            }
 
             if (resizeTimeoutRef.current) {
                 clearTimeout(resizeTimeoutRef.current);
@@ -53,7 +60,7 @@ export const DrawBoard = ({fileContents}: DrawBoardProps) => {
     }, []);
 
     return (
-        <div className="canvas-container">
+        <div className="canvas-container" ref={containerRef}>
             <ModalAddImage />
             <div className="canvas" id={CANVAS_ID} ref={canvasRef}></div>
         </div>

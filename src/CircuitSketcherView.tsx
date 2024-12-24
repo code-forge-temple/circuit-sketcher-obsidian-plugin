@@ -7,16 +7,18 @@
 
 import {WorkspaceLeaf, TextFileView} from "obsidian";
 import React, {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client'
+import {createRoot, Root} from 'react-dom/client'
 import {App} from "./components/App";
 import {CanvasManager} from "circuit-sketcher-core";
 import CircuitSketcherPlugin from "./main";
 import {LocalStorageManager} from "circuit-sketcher-core";
+import "./CircuitSketcherView.scss";
 
 export const CIRCUIT_VIEW_TYPE = "circuit-sketcher-view";
 
 export class CircuitSketcherView extends TextFileView {
     private plugin: CircuitSketcherPlugin;
+    private root: Root | null = null;
 
     constructor (leaf: WorkspaceLeaf, plugin: CircuitSketcherPlugin) {
         super(leaf);
@@ -37,14 +39,15 @@ export class CircuitSketcherView extends TextFileView {
     // Set the data to the editor. This is used to load the file contents.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setViewData = async (fileContents: string, clear: boolean) => {
-        const viewDomContent = this.containerEl.children[1];
-        viewDomContent.innerHTML = ``;
-
-        (viewDomContent as HTMLElement).style.overflow = "hidden"; // important for the canvas to be able to drag on it
-
         LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
-        createRoot(viewDomContent).render(
+        const viewDomContent = this.containerEl.children[1];
+
+        if (!this.root) {
+            this.root = createRoot(viewDomContent);
+        }
+
+        this.root.render(
             <StrictMode>
                 <App fileContents= {fileContents} />
             </StrictMode>,
@@ -63,9 +66,16 @@ export class CircuitSketcherView extends TextFileView {
     clear (): void {}
 
     async onClose () {
+        if (this.root) {
+            this.root.unmount();
+            this.root = null;
+        }
+
         const viewDomContent = this.containerEl.children[1];
 
-        viewDomContent.innerHTML = ``;
+        while (viewDomContent.firstChild) {
+            viewDomContent.removeChild(viewDomContent.firstChild);
+        }
 
         CanvasManager.destroy();
     }
