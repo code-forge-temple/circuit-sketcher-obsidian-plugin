@@ -98,7 +98,6 @@ export default class CircuitSketcherPlugin extends Plugin {
 
         const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
 
-        //return await this.app.vault.read(libraryFile as TFile);
         if (libraryFile instanceof TFile) {
             return await this.app.vault.read(libraryFile);
         }
@@ -121,6 +120,5 @@ export default class CircuitSketcherPlugin extends Plugin {
         } else {
             throw new Error("Library file is not a valid TFile");
         }
-        //await this.app.vault.modify(libraryFile as TFile, content);
     }
 }
