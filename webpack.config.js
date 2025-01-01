@@ -15,13 +15,30 @@ const postcssLoader = {
   },
 };
 
+const ENVIRONMENT = "production";
+
 module.exports = {
   entry: "./src/main.ts",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: [
+          {
+            loader: "ts-loader",
+          },
+          {
+            loader: "webpack-preprocessor-loader",
+            options: {
+              params: {
+                dev: ENVIRONMENT === "development", // for preprocessor commands defined with `#!if dev` and `#!endif`
+              },
+              directives: {
+                dev: ENVIRONMENT === "development", // for preprocessor command `#!dev`
+              },
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -58,7 +75,7 @@ module.exports = {
   externals: {
     obsidian: "commonjs obsidian",
   },
-  mode: "production",
+  mode: ENVIRONMENT,
   plugins: [
     new webpack.BannerPlugin({
       banner: `/*! Also see LICENSE file in the root of the project. */`,

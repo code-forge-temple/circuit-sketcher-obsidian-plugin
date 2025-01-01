@@ -21,6 +21,9 @@ export class CircuitSketcherView extends TextFileView {
     private root: Root | null = null;
 
     constructor (leaf: WorkspaceLeaf, plugin: CircuitSketcherPlugin) {
+        // #!dev
+        console.log("CircuitSketcherView.constructor()");
+
         super(leaf);
 
         this.plugin = plugin;
@@ -39,13 +42,16 @@ export class CircuitSketcherView extends TextFileView {
     // Set the data to the editor. This is used to load the file contents.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setViewData = async (fileContents: string, clear: boolean) => {
+        // #!dev
+        console.log("CircuitSketcherView.setViewData() - NEW FILE");
+
         LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
         const viewDomContent = this.containerEl.children[1];
 
-        if (!this.root) {
-            this.root = createRoot(viewDomContent);
-        }
+        this.clear();
+
+        this.root = createRoot(viewDomContent);
 
         this.root.render(
             <StrictMode>
@@ -56,6 +62,9 @@ export class CircuitSketcherView extends TextFileView {
 
     // Gets the data from the editor. This will be called to save the editor contents to the file.
     getViewData = (): string => {
+        // #!dev
+        console.log("CircuitSketcherView.getViewData() - OLD FILE");
+
         const fileContents = CanvasManager.getInstance().stringify(true);
 
         this.plugin.setLibraryFile(LocalStorageManager.getLibrary(true));
@@ -63,9 +72,17 @@ export class CircuitSketcherView extends TextFileView {
         return fileContents;
     }
 
-    clear (): void {}
+    // Clear the editor. This is usually called when we're about to open a completely different file, so it's best to clear any editor states like undo-redo history, and any caches/indexes associated with the previous file contents.
+    clear (): void {
+        // #!dev
+        console.log("CircuitSketcherView.clear()");
 
-    async onClose () {
+        CanvasManager.destroy();
+
+        this.clearHtml();
+    }
+
+    clearHtml (): void {
         if (this.root) {
             this.root.unmount();
             this.root = null;
@@ -76,7 +93,12 @@ export class CircuitSketcherView extends TextFileView {
         while (viewDomContent.firstChild) {
             viewDomContent.removeChild(viewDomContent.firstChild);
         }
+    }
 
-        CanvasManager.destroy();
+    async onClose () {
+        // #!dev
+        console.log("CircuitSketcherView.onClose()");
+
+        this.clear();
     }
 }
