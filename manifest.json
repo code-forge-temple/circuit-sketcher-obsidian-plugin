@@ -1,9 +1,9 @@
 {
     "id": "circuit-sketcher",
     "name": "Circuit Sketcher",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "minAppVersion": "0.15.0",
-    "description": "A plugin for drawing circuits on a canvas, based on circuit-sketcher-core.",
+    "description": "Draw circuits on a canvas using circuit-sketcher-core.",
     "author": "Code Forge Temple",
     "authorUrl": "https://github.com/code-forge-temple",
     "isDesktopOnly": true

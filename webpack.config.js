@@ -31,10 +31,10 @@ module.exports = {
             loader: "webpack-preprocessor-loader",
             options: {
               params: {
-                dev: ENVIRONMENT === "development", // for preprocessor commands defined with `#!if dev` and `#!endif`
+                dev: ENVIRONMENT === "development", // for preprocessor commands defined with `#!if dev` and `#!endif` (multiple lines)
               },
               directives: {
-                dev: ENVIRONMENT === "development", // for preprocessor command `#!dev`
+                dev: ENVIRONMENT === "development", // for preprocessor command `#!dev` (single line)
               },
             },
           },

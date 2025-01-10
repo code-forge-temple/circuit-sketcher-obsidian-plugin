@@ -47,12 +47,12 @@ export default class CircuitSketcherPlugin extends Plugin {
         // Add a command to create a new `.circuit-sketcher` file
         this.addCommand({
             id: "circuit-sketcher-create-new",
-            name: "Create New Circuit File",
+            name: "Create new file",
             callback: this.createNewCircuitSketcher,
         });
 
 
-        this.addRibbonIcon('circuit', 'Create New Circuit Sketcher File', this.createNewCircuitSketcher);
+        this.addRibbonIcon('circuit', 'Create new Circuit Sketcher file', this.createNewCircuitSketcher);
     }
 
     async onunload () {
@@ -60,7 +60,7 @@ export default class CircuitSketcherPlugin extends Plugin {
 
     public fileName: string = "";
     private async createNewCircuitSketcher () {
-        const newFileName = await this.generateUniqueFileName("New Circuit Sketcher File", FILE_EXTENSION);
+        const newFileName = await this.generateUniqueFileName("Untitled", FILE_EXTENSION);
         const file = await this.app.vault.create(newFileName, "");
         const leaf = this.app.workspace.getLeaf(false);
 
@@ -75,7 +75,7 @@ export default class CircuitSketcherPlugin extends Plugin {
 
         while (await this.app.vault.adapter.exists(fileName)) {
             index += 1;
-            fileName = `${baseName} (${index}).${extension}`;
+            fileName = `${baseName} ${index}.${extension}`;
         }
 
         return fileName;

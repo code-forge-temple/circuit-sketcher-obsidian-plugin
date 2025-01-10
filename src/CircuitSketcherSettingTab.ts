@@ -22,12 +22,12 @@ export class CircuitSketcherSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         new Setting(containerEl)
-            .setName("Circuit Sketcher Library")
-            .setDesc("The Circuit Sketcher plugin will allow you to save any circuit element custom design you create and make it available throughout any .circuit-sketcher file.");
+            .setName("Library")
+            .setDesc("The Circuit Sketcher library will allow you to save any circuit element custom design you create and make it available throughout any .circuit-sketcher file.");
 
         new Setting(containerEl)
-            .setName("Library Path")
-            .setDesc("The Circuit Sketcher plugin library will be stored at: vault_root/.lib.circuit-sketcher")
+            .setName("Library path")
+            .setDesc("The Circuit Sketcher library will be stored at: vault_root/.lib.circuit-sketcher")
             .addText(text => text.setValue(this.plugin.settings.libraryPath).setDisabled(true));
     }
 }

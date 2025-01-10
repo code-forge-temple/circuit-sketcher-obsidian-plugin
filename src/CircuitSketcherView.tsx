@@ -36,6 +36,12 @@ export class CircuitSketcherView extends TextFileView {
     }
 
     getDisplayText () {
+        const activeFile = this.app.workspace.getActiveFile();
+
+        if (activeFile) {
+            return `${activeFile.basename}`;
+        }
+
         return "Circuit Sketcher";
     }
 
