@@ -1,5 +1,5 @@
 # circuit-sketcher-obsidian-plugin
-A plugin for Obsidian to draw circuits on a canvas.
+A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-forge-temple/circuit-sketcher-core](https://github.com/code-forge-temple/circuit-sketcher-core).
 
 ## Table of Contents
 
@@ -38,6 +38,7 @@ or
     - After you are satisfied with your changes to the circuit node, and if you wish to save the circuit node to reuse it in the current or a different `.circuit-sketcher` file, you can right-click on the circuit node and press `Save Node to Library` (this will update the root Obsidian vault `circuit-sketcher.lib` file).
     - You can reuse the node by right-clicking on the canvas and selecting `Add Node from Library`.
     - Connections between circuit nodes can be made by dragging and dropping one port to the destination port (if it is a compatible port). You can delete a connection by selecting it and then pressing the Delete key.
+    - You can drag the entire circuit by holding the mouse scroll button and moving the mouse.
 
 A short video tutorial on how to use the plugin:
 
