@@ -90,16 +90,18 @@ export default class CircuitSketcherPlugin extends Plugin {
     }
 
     public async getLibraryFile (): Promise<string> {
+        const NEW_LIBRARY_CONTENT = "{}";
+
         if (!(await this.app.vault.adapter.exists(this.settings.libraryPath))) {
             try {
-                await this.app.vault.create(this.settings.libraryPath, "");
+                await this.app.vault.create(this.settings.libraryPath, NEW_LIBRARY_CONTENT);
             } catch { /*ignore*/}
         }
 
         const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
 
         if (libraryFile instanceof TFile) {
-            return await this.app.vault.read(libraryFile);
+            return (await this.app.vault.read(libraryFile)) || NEW_LIBRARY_CONTENT;
         }
 
         throw new Error("Library file is not a valid TFile");
