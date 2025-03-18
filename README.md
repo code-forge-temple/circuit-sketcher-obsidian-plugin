@@ -19,12 +19,12 @@ A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-for
 
 1. Open [Obsidian](https://obsidian.md) and go to `Settings` ⇒ `Community Plugins` ⇒ `Browse`.
 2. Search for `Circuit Sketcher`.
-3. Select the `Circuit Sketcher` plugin and press `Install`.
+3. Select the `Circuit Sketcher` plugin and press `Install`, then press `Enable`.
 
 or
 
 1. Open [Community Plugins Page](https://obsidian.md/plugins?id=circuit-sketcher) in browser.
-2. Select `Install`.
+2. Select `Install`, then press `Enable`.
 
 ## Usage
 
