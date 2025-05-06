@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const fs = require("fs").promises;
 
 const postcssLoader = {
   loader: "postcss-loader",
@@ -81,5 +83,29 @@ module.exports = {
       banner: `/*! Also see LICENSE file in the root of the project. */`,
       raw: true,
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+          {
+              from: path.resolve("./manifest.json"),
+              to: "manifest.json",
+              transform: async (content) => {
+                  try {
+                      const pkgPath = path.resolve("package.json");
+                      const pkgData = await fs.readFile(pkgPath, "utf8");
+                      const pkg = JSON.parse(pkgData);
+                      const manifest = JSON.parse(content.toString());
+
+                      manifest.version = pkg.version;
+
+                      return JSON.stringify(manifest, null, 4);
+                  } catch (error) {
+                      console.error("Error updating manifest.json:", error);
+
+                      return content;
+                  }
+              },
+          },
+      ],
+  }),
   ],
 };

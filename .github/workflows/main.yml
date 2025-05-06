@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "webpack.config.js"
+      - "package.json"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "src/**"
+      - "webpack.config.js"
+      - "package.json"
+      - ".github/workflows/**"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js using .nvmrc
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build the project
+      - name: Build project
+        run: npm run build
+
+      # Step 4.5: Extract version from package.json
+      - name: Get Package Version
+        id: pkg_version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      # Step 5: Create a GitHub Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.pkg_version.outputs.VERSION }}
+          release_name: Release ${{ steps.pkg_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      # Step 6: Upload each as a release asset
+      - name: Upload Release Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
+          UPLOAD_URL="${UPLOAD_URL%\{*}"
+
+          for file in dist/circuit-sketcher/*; do
+            curl -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: $(file -b --mime-type "$file")" \
+              --data-binary @"$file" \
+              "$UPLOAD_URL?name=$(basename "$file")"
+          done
