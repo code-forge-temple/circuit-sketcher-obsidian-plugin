@@ -10,7 +10,7 @@ import "./App.scss";
 import {DrawBoardProps} from "../DrawBoard/DrawBoard";
 
 
-export const App = ({fileContents}: DrawBoardProps) => {
+export const App = (props: DrawBoardProps) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [DrawBoard, setDrawBoard] = useState<React.ComponentType<DrawBoardProps> | null>(null);
     const loadingElement = (
@@ -35,7 +35,7 @@ export const App = ({fileContents}: DrawBoardProps) => {
     return (
         <div className="circuit-sketcher-plugin">
             <Suspense fallback={loadingElement}>
-                <DrawBoard fileContents= {fileContents} />
+                <DrawBoard {...props} />
             </Suspense>
         </div>
     );

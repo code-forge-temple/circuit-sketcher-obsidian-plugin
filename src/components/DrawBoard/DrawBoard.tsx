@@ -11,11 +11,12 @@ import './DrawBoard.scss';
 
 export type DrawBoardProps = {
     fileContents: string;
+    onLoaded: () => void;
 };
 
 const CANVAS_ID = "circuit-board";
 
-export const DrawBoard = ({fileContents}: DrawBoardProps) => {
+export const DrawBoard = ({fileContents, onLoaded}: DrawBoardProps) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const resizeTimeoutRef = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,9 @@ export const DrawBoard = ({fileContents}: DrawBoardProps) => {
         if (!canvasRef.current) return;
 
         CanvasManager.setCanvasId(CANVAS_ID).getInstance().parse(fileContents);
-    }, [fileContents]);
+
+        onLoaded();
+    }, [fileContents, onLoaded]);
 
     const handleResize = () => {
         if (resizeTimeoutRef.current) {

@@ -1,4 +1,7 @@
 # circuit-sketcher-obsidian-plugin
+
+> ⭐️ If you like this plugin, please consider [starring the repository](https://github.com/code-forge-temple/circuit-sketcher-obsidian-plugin) on GitHub!
+
 A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-forge-temple/circuit-sketcher-core](https://github.com/code-forge-temple/circuit-sketcher-core).
 
 ## Table of Contents
@@ -14,6 +17,7 @@ A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-for
 - Save and load circuit designs.
 - Customizable library for circuit elements.
 - Responsive design with automatic resizing.
+- **Embed circuit diagrams in notes:** Reference `.circuit-sketcher` files in your notes (e.g., by dragging and dropping the file into a note). In read mode, an image of the circuit will be displayed automatically.
 
 ## Installation
 
@@ -28,7 +32,7 @@ or
 
 ## Usage
 
-1. Use the ribbon icon or command palette to create a new circuit sketcher file.
+1. Use the ribbon icon, command palette, or right-click on a target folder in the file explorer and select **Create new Circuit Sketcher file** to create a new circuit sketcher file.
 2. Start drawing your circuit on the canvas:
     - On the canvas, right-click to show the canvas menu, and select `Create Node`.
     - Right-click on the node to show the node menu, select `Change Image`, and choose an image relevant to your circuit node.

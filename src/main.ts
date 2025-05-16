@@ -5,34 +5,24 @@
  *    See the LICENSE file in the project root for more information.    *
  ************************************************************************/
 
-import {Plugin, App, PluginManifest, TFile, addIcon} from "obsidian";
+import {App, PluginManifest, TFile, addIcon} from "obsidian";
 import {CIRCUIT_VIEW_TYPE, CircuitSketcherView} from "./CircuitSketcherView";
 import {CircuitSketcherSettingTab} from './CircuitSketcherSettingTab';
 import icon from './assets/icon.svg';
+import {createIntermediaryFolders, dataUrlToUint8Array, hashPath} from "./utils/utils";
+import {CREATE_FILE_COMMAND, FILE_EXTENSION, NEW_LIBRARY_CONTENT} from "./constants/constants";
+import UpgradablePlugin from "./UpgradablePlugin";
 
-const FILE_EXTENSION = "circuit-sketcher";
 
-interface CircuitSketcherSettings {
-    libraryPath: string;
-}
-
-const DEFAULT_SETTINGS: CircuitSketcherSettings = {
-    libraryPath: 'circuit-sketcher.lib',
-};
-
-export default class CircuitSketcherPlugin extends Plugin {
-    settings: CircuitSketcherSettings;
-
+export default class CircuitSketcherPlugin extends UpgradablePlugin {
     constructor (app: App, manifest: PluginManifest) {
-        super(app, manifest)
+        super(app, manifest);
 
         this.createNewCircuitSketcher = this.createNewCircuitSketcher.bind(this);
-
-        this.settings = DEFAULT_SETTINGS;
     }
 
     async onload () {
-        await this.loadSettings();
+        await super.onload();
 
         this.addSettingTab(new CircuitSketcherSettingTab(this.app, this));
 
@@ -51,17 +41,60 @@ export default class CircuitSketcherPlugin extends Plugin {
             callback: this.createNewCircuitSketcher,
         });
 
+        // Add a button to create a new `.circuit-sketcher` file
+        this.addRibbonIcon('circuit', CREATE_FILE_COMMAND, () => this.createNewCircuitSketcher());
 
-        this.addRibbonIcon('circuit', 'Create new Circuit Sketcher file', this.createNewCircuitSketcher);
+        // Add a context menu item to create a new `.circuit-sketcher` file in Obsidian file explorer
+        this.registerEvent(
+            this.app.workspace.on('file-menu', (menu, file) => {
+                menu.addItem((item) => {
+                    const targetPath = file instanceof TFile
+                        ? this.app.vault.getAbstractFileByPath(file.parent?.path || "")?.path
+                        : file.path;
+
+                    item
+                        .setTitle(CREATE_FILE_COMMAND)
+                        .setIcon("circuit")
+                        .onClick(() => this.createNewCircuitSketcher(targetPath));
+                });
+            })
+        );
+
+        // substitute the internal embeded `.circuit-sketcher` file with an image of it
+        this.registerMarkdownPostProcessor(async (el, ctx) => {
+            const embeds = el.querySelectorAll(`span.internal-embed[src$=".${FILE_EXTENSION}"]`);
+
+            for (const embed of embeds) {
+                let fileName = embed.getAttribute('src');
+
+                if (!fileName) continue;
+
+                const file = this.app.metadataCache.getFirstLinkpathDest(fileName, ctx.sourcePath);
+
+                if (!file) continue;
+
+                fileName = file.path;
+
+                const pngPath = `${this.settings.cachePath}/${hashPath(fileName)}`;
+                const img = document.createElement('img');
+
+                img.src = this.app.vault.adapter.getResourcePath(pngPath);
+                img.onerror = () => {
+                    img.style.display = "none";
+                };
+
+                embed.parentElement?.replaceChild(img, embed);
+            }
+        });
     }
 
-    async onunload () {
-    }
+    async onunload () { }
 
     public fileName: string = "";
-    private async createNewCircuitSketcher () {
-        const newFileName = await this.generateUniqueFileName("Untitled", FILE_EXTENSION);
-        const file = await this.app.vault.create(newFileName, "");
+
+    private async createNewCircuitSketcher (path: string = "") {
+        const newFileName = await this.generateUniqueFileName("Untitled", FILE_EXTENSION, path);
+        const file = await this.app.vault.create(path ? `${path}/${newFileName}`: newFileName, "");
         const leaf = this.app.workspace.getLeaf(false);
 
         this.fileName = newFileName.split('.')[0];
@@ -69,11 +102,11 @@ export default class CircuitSketcherPlugin extends Plugin {
         await leaf.openFile(file);
     }
 
-    private async generateUniqueFileName (baseName: string, extension: string): Promise<string> {
+    private async generateUniqueFileName (baseName: string, extension: string, path: string=""): Promise<string> {
         let index = 0;
         let fileName = `${baseName}.${extension}`;
 
-        while (await this.app.vault.adapter.exists(fileName)) {
+        while (await this.app.vault.adapter.exists(path ? `${path}/${fileName}` : fileName)) {
             index += 1;
             fileName = `${baseName} ${index}.${extension}`;
         }
@@ -81,46 +114,30 @@ export default class CircuitSketcherPlugin extends Plugin {
         return fileName;
     }
 
-    async loadSettings () {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-    }
-
-    async saveSettings () {
-        await this.saveData(this.settings);
-    }
-
     public async getLibraryFile (): Promise<string> {
-        const NEW_LIBRARY_CONTENT = "{}";
+        await createIntermediaryFolders(this.app.vault, this.settings.libraryPath);
 
         if (!(await this.app.vault.adapter.exists(this.settings.libraryPath))) {
             try {
-                await this.app.vault.create(this.settings.libraryPath, NEW_LIBRARY_CONTENT);
+                await this.app.vault.adapter.write(this.settings.libraryPath, NEW_LIBRARY_CONTENT);
             } catch { /*ignore*/}
         }
 
-        const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
-
-        if (libraryFile instanceof TFile) {
-            return (await this.app.vault.read(libraryFile)) || NEW_LIBRARY_CONTENT;
-        }
-
-        throw new Error("Library file is not a valid TFile");
+        return (await this.app.vault.adapter.read(this.settings.libraryPath)) || NEW_LIBRARY_CONTENT;;
     }
 
     public async setLibraryFile (content: string): Promise<void> {
-        if (!(await this.app.vault.adapter.exists(this.settings.libraryPath))) {
-            try {
-                await this.app.vault.create(this.settings.libraryPath, content);
-                return;
-            } catch { /*ignore*/ }
-        }
+        await createIntermediaryFolders(this.app.vault, this.settings.libraryPath);
+        await this.app.vault.adapter.write(this.settings.libraryPath, content);
+    }
 
-        const libraryFile = this.app.vault.getAbstractFileByPath(this.settings.libraryPath);
+    public async setCacheImageFile (fileName: string | undefined, getFileContentAsDataUrl: () => Promise<string>): Promise<void> {
+        if (!fileName) return;
 
-        if (libraryFile instanceof TFile) {
-            await this.app.vault.modify(libraryFile, content);
-        } else {
-            throw new Error("Library file is not a valid TFile");
-        }
+        const fileContent = dataUrlToUint8Array(await getFileContentAsDataUrl());
+        const cachePath = `${this.settings.cachePath}/${hashPath(fileName)}`;
+
+        await createIntermediaryFolders(this.app.vault, cachePath);
+        await this.app.vault.adapter.writeBinary(cachePath, fileContent);
     }
 }

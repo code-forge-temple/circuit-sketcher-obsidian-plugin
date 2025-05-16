@@ -61,7 +61,11 @@ export class CircuitSketcherView extends TextFileView {
 
         this.root.render(
             <StrictMode>
-                <App fileContents= {fileContents} />
+                <App
+                    fileContents= {fileContents}
+                    onLoaded={() => {
+                        this.plugin.setCacheImageFile(this.file?.path, CanvasManager.getInstance().toPng);
+                    }} />
             </StrictMode>,
         );
     }
@@ -74,6 +78,7 @@ export class CircuitSketcherView extends TextFileView {
         const fileContents = CanvasManager.getInstance().stringify(true);
 
         this.plugin.setLibraryFile(LocalStorageManager.getLibrary(true));
+        this.plugin.setCacheImageFile(this.file?.path, CanvasManager.getInstance().toPng);
 
         return fileContents;
     }
