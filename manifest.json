@@ -1,7 +1,7 @@
 {
     "id": "circuit-sketcher",
     "name": "Circuit Sketcher",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "minAppVersion": "0.15.0",
     "description": "Draw circuits on a canvas using circuit-sketcher-core.",
     "author": "Code Forge Temple",

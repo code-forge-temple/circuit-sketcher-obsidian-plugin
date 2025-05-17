@@ -1,6 +1,6 @@
 {
     "name": "circuit-sketcher-obsidian-plugin",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "main": "main.js",
     "author": "Code Forge Temple",
     "license": "GPL",

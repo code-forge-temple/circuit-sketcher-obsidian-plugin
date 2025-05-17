@@ -77,13 +77,19 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
 
                 const pngPath = `${this.settings.cachePath}/${hashPath(fileName)}`;
                 const img = document.createElement('img');
+                const link = document.createElement('a');
 
                 img.src = this.app.vault.adapter.getResourcePath(pngPath);
                 img.onerror = () => {
                     img.style.display = "none";
                 };
 
-                embed.parentElement?.replaceChild(img, embed);
+                link.href = this.app.metadataCache.fileToLinktext(file, ctx.sourcePath, true);
+                link.setAttribute('data-href', fileName);
+                link.classList.add('internal-link');
+                link.appendChild(img);
+
+                embed.parentElement?.replaceChild(link, embed);
             }
         });
     }
