@@ -51,7 +51,7 @@ export class CircuitSketcherView extends TextFileView {
         // #!dev
         console.log("CircuitSketcherView.setViewData() - NEW FILE");
 
-        LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
+        await LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
         const viewDomContent = this.containerEl.children[1];
 
@@ -77,7 +77,9 @@ export class CircuitSketcherView extends TextFileView {
 
         const fileContents = CanvasManager.getInstance().stringify(true);
 
-        this.plugin.setLibraryFile(LocalStorageManager.getLibrary(true));
+        LocalStorageManager.getLibrary(true).then((library) => {
+            this.plugin.setLibraryFile(library);
+        });
         this.plugin.setCacheImageFile(this.file?.path, CanvasManager.getInstance().toPng);
 
         return fileContents;
