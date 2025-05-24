@@ -4,6 +4,9 @@
 
 A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-forge-temple/circuit-sketcher-core](https://github.com/code-forge-temple/circuit-sketcher-core).
 
+[![Circuit Sketcher Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2FHEAD%2Fcommunity-plugin-stats.json&query=%24.%5B%22circuit-sketcher%22%5D.downloads&style=for-the-badge&label=Circuit%20Sketcher%20Downloads)](https://www.obsidianstats.com/plugins/circuit-sketcher)
+
+
 ## Table of Contents
 
 - [Features](#features)
