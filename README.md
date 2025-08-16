@@ -1,11 +1,20 @@
 # circuit-sketcher-obsidian-plugin
 
-> ⭐️ If you like this plugin, please consider [starring the repository](https://github.com/code-forge-temple/circuit-sketcher-obsidian-plugin) on GitHub!
+**A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-forge-temple/circuit-sketcher-core](https://github.com/code-forge-temple/circuit-sketcher-core).**  
 
-A plugin for Obsidian to draw circuits on a canvas. It is based on the [code-forge-temple/circuit-sketcher-core](https://github.com/code-forge-temple/circuit-sketcher-core).
+> ⭐️ **Love this project?** Please consider [starring the repository](https://github.com/code-forge-temple/circuit-sketcher-obsidian-plugin) on GitHub and [supporting development](https://github.com/sponsors/code-forge-temple) to help me continue building amazing features!
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Obsidian](https://img.shields.io/badge/Obsidian-483699?logo=obsidian&logoColor=white)](https://docs.obsidian.md/)
+[![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?logo=webpack&logoColor=white)](https://webpack.js.org/)
+[![Sass](https://img.shields.io/badge/Sass-CC6699?logo=sass&logoColor=white)](https://sass-lang.com/)
+[![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)](https://eslint.org/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
 [![Circuit Sketcher Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2FHEAD%2Fcommunity-plugin-stats.json&query=%24.%5B%22circuit-sketcher%22%5D.downloads&style=for-the-badge&label=Circuit%20Sketcher%20Downloads)](https://www.obsidianstats.com/plugins/circuit-sketcher)
-
 
 ## Table of Contents
 
@@ -50,7 +59,7 @@ or
 
 A short video tutorial on how to use the plugin:
 
-[![S6ifgDb83Pg](https://img.youtube.com/vi/S6ifgDb83Pg/0.jpg)](https://www.youtube.com/watch?v=S6ifgDb83Pg)
+[<img src="https://img.youtube.com/vi/S6ifgDb83Pg/maxresdefault.jpg" alt="Watch Demo Video" width="600">](https://www.youtube.com/watch?v=S6ifgDb83Pg)
 
 ## Component Library
 
