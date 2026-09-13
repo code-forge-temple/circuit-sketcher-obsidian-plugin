@@ -1,6 +1,13 @@
 {
     "compilerOptions": {
         "target": "ES6",
+        /* Declared explicitly so type checking doesn't silently depend on a transitive
+         * @types/node widening the library. Affects type checking only, not output. */
+        "lib": [
+            "ES2020",
+            "DOM",
+            "DOM.Iterable"
+        ],
         "module": "commonjs",
         "inlineSourceMap": true,
         "inlineSources": true,
