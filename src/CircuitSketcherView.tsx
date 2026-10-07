@@ -19,6 +19,13 @@ export const CIRCUIT_VIEW_TYPE = "circuit-sketcher-view";
 export class CircuitSketcherView extends TextFileView {
     private plugin: CircuitSketcherPlugin;
     private root: Root | null = null;
+    /* the canvas this view loaded - CanvasManager is a singleton, so clear() or another circuit
+     * view can replace it while this view is still around */
+    private manager: CanvasManager | null = null;
+    // what this view last loaded or saved, handed back while it has no canvas
+    private lastData = "";
+    // the circuit contents the cached embed image was last made from
+    private imageData: string | null = null;
 
     constructor (leaf: WorkspaceLeaf, plugin: CircuitSketcherPlugin) {
         // #!dev
@@ -51,6 +58,10 @@ export class CircuitSketcherView extends TextFileView {
         // #!dev
         console.log("CircuitSketcherView.setViewData() - NEW FILE");
 
+        // until the new canvas is loaded, a save must return this file's own contents
+        this.manager = null;
+        this.lastData = fileContents;
+
         await LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
         const viewDomContent = this.containerEl.children[1];
@@ -64,7 +75,9 @@ export class CircuitSketcherView extends TextFileView {
                 <App
                     fileContents= {fileContents}
                     onLoaded={() => {
-                        this.plugin.setCacheImageFile(this.file?.path, CanvasManager.getInstance().toPng);
+                        this.manager = CanvasManager.getInstance();
+                        this.imageData = fileContents;
+                        this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng);
                     }} />
             </StrictMode>,
         );
@@ -75,12 +88,24 @@ export class CircuitSketcherView extends TextFileView {
         // #!dev
         console.log("CircuitSketcherView.getViewData() - OLD FILE");
 
-        const fileContents = CanvasManager.getInstance().stringify(true);
+        /* no canvas loaded for this view (still loading, or clear() destroyed it): getInstance()
+         * would create an empty one, and its "[]" would be saved over the file */
+        if (!this.manager) return this.lastData;
+
+        // this view's own canvas, not getInstance(): another circuit view may have replaced it
+        const fileContents = this.manager.stringify(true);
+
+        this.lastData = fileContents;
 
         LocalStorageManager.getLibrary(true).then((library) => {
             this.plugin.setLibraryFile(library);
         });
-        this.plugin.setCacheImageFile(this.file?.path, CanvasManager.getInstance().toPng);
+
+        // the embed image only changes with the circuit, and exporting it briefly clears the selection
+        if (fileContents !== this.imageData) {
+            this.imageData = fileContents;
+            this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng);
+        }
 
         return fileContents;
     }
@@ -90,7 +115,15 @@ export class CircuitSketcherView extends TextFileView {
         // #!dev
         console.log("CircuitSketcherView.clear()");
 
+        // keep the latest edits - a save can still come after the canvas is gone
+        if (this.manager) {
+            this.lastData = this.manager.stringify(true);
+            this.manager = null;
+        }
+
         CanvasManager.destroy();
+
+        this.imageData = null;
 
         this.clearHtml();
     }

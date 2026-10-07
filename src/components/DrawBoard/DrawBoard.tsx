@@ -34,11 +34,9 @@ export const DrawBoard = ({fileContents, onLoaded}: DrawBoardProps) => {
             clearTimeout(resizeTimeoutRef.current);
         }
 
-        resizeTimeoutRef.current = window.setTimeout(async () => {
+        resizeTimeoutRef.current = window.setTimeout(() => {
             if (canvasRef.current) {
-                const jsonStr = await CanvasManager.getInstance().stringify();
-
-                CanvasManager.getInstance().parse(jsonStr);
+                CanvasManager.getInstance().resize();
             }
         }, 300);
     };
