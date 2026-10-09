@@ -53,10 +53,12 @@ or
     - Right-click on the node to show the node menu, select `Add Port...`, and choose the port location and type.
     - You can rename the circuit node label or port label by double-clicking on the label. The port or port label can also be deleted (right-click on the port to show the port menu and proceed from there).
     - You can relocate ports, either to a different node side or rearrange the ports on the same side, by dragging and dropping the port to the desired location within the dotted blue area.
+    - You can rotate a circuit node by right-clicking on it and selecting `Rotate`, then `90° Clockwise` or `90° Counterclockwise`. Its ports turn with it and its connections are routed again.
     - After you are satisfied with your changes to the circuit node, and if you wish to save the circuit node to reuse it in the current or a different `.circuit-sketcher` file, you can right-click on the circuit node and press `Save Node to Library` (this will update the root Obsidian vault `circuit-sketcher.lib` file).
     - You can reuse the node by right-clicking on the canvas and selecting `Library...` then selecting the desired node.
     - Connections between circuit nodes can be made by dragging and dropping one port to the destination port (if it is a compatible port). You can delete a connection by selecting it and then pressing the Delete key.
     - You can drag the entire circuit by holding the mouse scroll button and moving the mouse.
+    - You can zoom with the mouse wheel (around the mouse pointer), or with the `+` and `-` buttons in the bottom-right corner of the canvas. The square button below them goes back to 100% and centers the circuit. The zoom is saved with the file.
 
 A short video tutorial on how to use the plugin:
 
@@ -68,9 +70,14 @@ To help you get started with Circuit Sketcher, we provide a curated library of c
 
 ### Quick Start with Pre-built Components
 
+**Sync the default library (quickest):**
+- Right click on canvas to show the menu, then `Library...` -> `Manage Library...` -> `Sync...` on the `default` group. It downloads the latest components from circuit-sketcher-lib into `default`; press `Sync...` again any time to pick up new ones.
+- `default` is read-only: every sync replaces its content. To change one of its components, place it on the canvas, edit it and use `Save Node to Library` - your version is saved outside `default`.
+- **Network use:** this is the only time the plugin goes online. `Sync...` downloads [library.json](https://raw.githubusercontent.com/code-forge-temple/circuit-sketcher-lib/main/assets/lib/library.json) from GitHub; nothing is ever uploaded.
+
 **Import the entire library:**
 - Download the complete component library: [library.json](https://github.com/code-forge-temple/circuit-sketcher-lib/blob/main/assets/lib/library.json)
-- Import it directly into Circuit Sketcher to get access to all available components (right click on canvas to show the menu, then `Library...` -> `Import Library`)
+- Import it directly into Circuit Sketcher to get access to all available components (right click on canvas to show the menu, then `Library...` -> `Manage Library...` -> `Import...` on the `Library` row, or on any group to import into that group)
 
 **Import individual components:**
 - Browse individual components: [assets/nodes](https://github.com/code-forge-temple/circuit-sketcher-lib/tree/main/assets/nodes)

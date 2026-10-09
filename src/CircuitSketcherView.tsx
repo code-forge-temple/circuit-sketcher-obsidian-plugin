@@ -64,7 +64,7 @@ export class CircuitSketcherView extends TextFileView {
 
         await LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
-        const viewDomContent = this.containerEl.children[1];
+        const viewDomContent = this.contentEl;
 
         this.clear();
 
@@ -134,7 +134,7 @@ export class CircuitSketcherView extends TextFileView {
             this.root = null;
         }
 
-        const viewDomContent = this.containerEl.children[1];
+        const viewDomContent = this.contentEl;
 
         while (viewDomContent.firstChild) {
             viewDomContent.removeChild(viewDomContent.firstChild);
