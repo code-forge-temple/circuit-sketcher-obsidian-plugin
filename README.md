@@ -29,7 +29,8 @@
 
 - Draw and edit circuit diagrams directly within Obsidian.
 - Save and load circuit designs.
-- Customizable library for circuit elements.
+- Customizable component library, organized in groups and subgroups, with the published components one `Sync...` away.
+- Rotate circuit nodes, zoom and pan the canvas.
 - Responsive design with automatic resizing.
 - **Embed circuit diagrams in notes:** Reference `.circuit-sketcher` files in your notes (e.g., by dragging and dropping the file into a note). In read mode, an image of the circuit will be displayed automatically.
 
@@ -54,8 +55,9 @@ or
     - You can rename the circuit node label or port label by double-clicking on the label. The port or port label can also be deleted (right-click on the port to show the port menu and proceed from there).
     - You can relocate ports, either to a different node side or rearrange the ports on the same side, by dragging and dropping the port to the desired location within the dotted blue area.
     - You can rotate a circuit node by right-clicking on it and selecting `Rotate`, then `90° Clockwise` or `90° Counterclockwise`. Its ports turn with it and its connections are routed again.
-    - After you are satisfied with your changes to the circuit node, and if you wish to save the circuit node to reuse it in the current or a different `.circuit-sketcher` file, you can right-click on the circuit node and press `Save Node to Library` (this will update the root Obsidian vault `circuit-sketcher.lib` file).
-    - You can reuse the node by right-clicking on the canvas and selecting `Library...` then selecting the desired node.
+    - After you are satisfied with your changes to the circuit node, and if you wish to save the circuit node to reuse it in the current or a different `.circuit-sketcher` file, you can right-click on the circuit node and press `Save Node to Library` (this will update the vault's `.circuit-sketcher/circuit-sketcher.lib` file).
+    - You can reuse the node by right-clicking on the canvas and selecting `Library...`, then the desired node (nodes in a group are in that group's submenu).
+    - To organize the library, right-click on the canvas and select `Library...` -> `Manage Library...`. There you can create groups and subgroups (`New subgroup`), drag nodes and groups into other groups, rename or delete them (deleting a group keeps its nodes: they move up a level), `Import...` a library or node file into any group, and `Export...` a node, a group or the whole library. The `default` group is read-only and only offers `Sync...` (see [Component Library](#component-library)).
     - Connections between circuit nodes can be made by dragging and dropping one port to the destination port (if it is a compatible port). You can delete a connection by selecting it and then pressing the Delete key.
     - You can drag the entire circuit by holding the mouse scroll button and moving the mouse.
     - You can zoom with the mouse wheel (around the mouse pointer), or with the `+` and `-` buttons in the bottom-right corner of the canvas. The square button below them goes back to 100% and centers the circuit. The zoom is saved with the file.
