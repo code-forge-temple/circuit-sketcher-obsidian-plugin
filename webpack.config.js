@@ -45,7 +45,10 @@ const postcssLoader = {
     },
 };
 
-const ENVIRONMENT = "production";
+/* production unless asked for: CI builds the releases from what is committed, so a development build
+ * can't slip into one. A local development build: CIRCUIT_SKETCHER_ENV=development (or `build.bat dev`).
+ */
+const ENVIRONMENT = process.env.CIRCUIT_SKETCHER_ENV === "development" ? "development" : "production";
 
 module.exports = {
     entry: "./src/main.ts",

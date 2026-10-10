@@ -15,6 +15,11 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.browser,
       parser: tseslintParser,
+      // type information, for the type-checked rules below (Obsidian's plugin review runs them too)
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
       "@typescript-eslint": tseslintPlugin,
@@ -27,6 +32,10 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-floating-promises": "error", // a promise is awaited, caught, or marked `void`
+      "@typescript-eslint/no-misused-promises": "error", // no async function where a void callback is expected
+      "@typescript-eslint/unbound-method": "error", // methods handed around keep their `this`
+      "@typescript-eslint/no-unsafe-assignment": "error", // `any` values don't spread silently
       "max-len": ["error", { code: 250 }],
       indent: ["error", 4, { SwitchCase: 1 }],
       "@typescript-eslint/no-explicit-any": "off",

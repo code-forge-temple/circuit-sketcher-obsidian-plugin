@@ -5,7 +5,7 @@
  *    See the LICENSE file in the project root for more information.    *
  ************************************************************************/
 
-import {App, PluginManifest, TFile, addIcon} from "obsidian";
+import {TFile, addIcon} from "obsidian";
 import {CIRCUIT_VIEW_TYPE, CircuitSketcherView} from "./CircuitSketcherView";
 import {CircuitSketcherSettingTab} from './CircuitSketcherSettingTab';
 import icon from './assets/icon.svg';
@@ -15,12 +15,6 @@ import UpgradablePlugin from "./UpgradablePlugin";
 
 
 export default class CircuitSketcherPlugin extends UpgradablePlugin {
-    constructor (app: App, manifest: PluginManifest) {
-        super(app, manifest);
-
-        this.createNewCircuitSketcher = this.createNewCircuitSketcher.bind(this);
-    }
-
     async onload () {
         await super.onload();
 
@@ -76,29 +70,27 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
                 fileName = file.path;
 
                 const pngPath = `${this.settings.cachePath}/${hashPath(fileName)}`;
-                const img = document.createElement('img');
-                const link = document.createElement('a');
+                const link = createEl('a', {
+                    cls: 'internal-link',
+                    href: this.app.metadataCache.fileToLinktext(file, ctx.sourcePath, true),
+                    attr: {'data-href': fileName},
+                });
+                const img = link.createEl('img', {attr: {src: this.app.vault.adapter.getResourcePath(pngPath)}});
 
-                img.src = this.app.vault.adapter.getResourcePath(pngPath);
+                // no cached image yet (the circuit hasn't been saved since the cache was emptied): no broken-image icon
                 img.onerror = () => {
-                    img.style.display = "none";
+                    img.hide();
                 };
-
-                link.href = this.app.metadataCache.fileToLinktext(file, ctx.sourcePath, true);
-                link.setAttribute('data-href', fileName);
-                link.classList.add('internal-link');
-                link.appendChild(img);
 
                 embed.parentElement?.replaceChild(link, embed);
             }
         });
     }
 
-    async onunload () { }
-
     public fileName: string = "";
 
-    private async createNewCircuitSketcher (path: string = "") {
+    // an arrow, so it can be handed to Obsidian as the command's callback and keep its `this`
+    private createNewCircuitSketcher = async (path: string = ""): Promise<void> => {
         const newFileName = await this.generateUniqueFileName("Untitled", FILE_EXTENSION, path);
         const file = await this.app.vault.create(path ? `${path}/${newFileName}`: newFileName, "");
         const leaf = this.app.workspace.getLeaf(false);
@@ -106,7 +98,7 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
         this.fileName = newFileName.split('.')[0];
 
         await leaf.openFile(file);
-    }
+    };
 
     private async generateUniqueFileName (baseName: string, extension: string, path: string=""): Promise<string> {
         let index = 0;

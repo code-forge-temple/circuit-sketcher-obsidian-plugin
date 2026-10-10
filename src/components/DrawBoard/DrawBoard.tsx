@@ -31,7 +31,7 @@ export const DrawBoard = ({fileContents, onLoaded}: DrawBoardProps) => {
 
     const handleResize = () => {
         if (resizeTimeoutRef.current) {
-            clearTimeout(resizeTimeoutRef.current);
+            window.clearTimeout(resizeTimeoutRef.current);
         }
 
         resizeTimeoutRef.current = window.setTimeout(() => {
@@ -55,7 +55,7 @@ export const DrawBoard = ({fileContents, onLoaded}: DrawBoardProps) => {
             }
 
             if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
+                window.clearTimeout(resizeTimeoutRef.current);
             }
         };
     }, []);

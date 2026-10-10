@@ -12,6 +12,7 @@ import {App} from "./components/App";
 import {CanvasManager} from "circuit-sketcher-core";
 import CircuitSketcherPlugin from "./main";
 import {LocalStorageManager} from "circuit-sketcher-core";
+import {reportFailure} from "./utils/utils";
 import "./CircuitSketcherView.scss";
 
 export const CIRCUIT_VIEW_TYPE = "circuit-sketcher-view";
@@ -29,7 +30,7 @@ export class CircuitSketcherView extends TextFileView {
 
     constructor (leaf: WorkspaceLeaf, plugin: CircuitSketcherPlugin) {
         // #!dev
-        console.log("CircuitSketcherView.constructor()");
+        console.debug("CircuitSketcherView.constructor()");
 
         super(leaf);
 
@@ -53,15 +54,19 @@ export class CircuitSketcherView extends TextFileView {
     }
 
     // Set the data to the editor. This is used to load the file contents.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setViewData = async (fileContents: string, clear: boolean) => {
+    setViewData = (fileContents: string): void => {
         // #!dev
-        console.log("CircuitSketcherView.setViewData() - NEW FILE");
+        console.debug("CircuitSketcherView.setViewData() - NEW FILE");
 
         // until the new canvas is loaded, a save must return this file's own contents
         this.manager = null;
         this.lastData = fileContents;
 
+        // Obsidian doesn't wait for this: the library is read first, then the canvas is drawn
+        this.loadCircuit(fileContents).catch(reportFailure("open the circuit"));
+    }
+
+    private loadCircuit = async (fileContents: string): Promise<void> => {
         await LocalStorageManager.setLibrary(await this.plugin.getLibraryFile());
 
         const viewDomContent = this.contentEl;
@@ -77,7 +82,7 @@ export class CircuitSketcherView extends TextFileView {
                     onLoaded={() => {
                         this.manager = CanvasManager.getInstance();
                         this.imageData = fileContents;
-                        this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng);
+                        this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng).catch(reportFailure("save the circuit's embed image"));
                     }} />
             </StrictMode>,
         );
@@ -86,7 +91,7 @@ export class CircuitSketcherView extends TextFileView {
     // Gets the data from the editor. This will be called to save the editor contents to the file.
     getViewData = (): string => {
         // #!dev
-        console.log("CircuitSketcherView.getViewData() - OLD FILE");
+        console.debug("CircuitSketcherView.getViewData() - OLD FILE");
 
         /* no canvas loaded for this view (still loading, or clear() destroyed it): getInstance()
          * would create an empty one, and its "[]" would be saved over the file */
@@ -97,14 +102,15 @@ export class CircuitSketcherView extends TextFileView {
 
         this.lastData = fileContents;
 
-        LocalStorageManager.getLibrary(true).then((library) => {
-            this.plugin.setLibraryFile(library);
-        });
+        // getViewData has to answer right away, so the library and the embed image are saved alongside
+        LocalStorageManager.getLibrary(true)
+            .then((library) => this.plugin.setLibraryFile(library))
+            .catch(reportFailure("save the component library"));
 
         // the embed image only changes with the circuit, and exporting it briefly clears the selection
         if (fileContents !== this.imageData) {
             this.imageData = fileContents;
-            this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng);
+            this.plugin.setCacheImageFile(this.file?.path, this.manager.toPng).catch(reportFailure("save the circuit's embed image"));
         }
 
         return fileContents;
@@ -113,7 +119,7 @@ export class CircuitSketcherView extends TextFileView {
     // Clear the editor. This is usually called when we're about to open a completely different file, so it's best to clear any editor states like undo-redo history, and any caches/indexes associated with the previous file contents.
     clear (): void {
         // #!dev
-        console.log("CircuitSketcherView.clear()");
+        console.debug("CircuitSketcherView.clear()");
 
         // keep the latest edits - a save can still come after the canvas is gone
         if (this.manager) {
@@ -143,7 +149,7 @@ export class CircuitSketcherView extends TextFileView {
 
     async onClose () {
         // #!dev
-        console.log("CircuitSketcherView.onClose()");
+        console.debug("CircuitSketcherView.onClose()");
 
         this.clear();
     }

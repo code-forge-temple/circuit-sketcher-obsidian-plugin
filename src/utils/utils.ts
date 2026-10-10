@@ -61,3 +61,10 @@ export function compareVersions (a: string, b: string): number {
     }
     return 0;
 }
+
+/* For a promise nothing can wait for (Obsidian saves a view synchronously, a React effect can't be
+ * async): its failure is reported instead of becoming an unhandled rejection.
+ */
+export const reportFailure = (what: string) => (error: unknown): void => {
+    console.error(`Circuit Sketcher: could not ${what}`, error);
+};

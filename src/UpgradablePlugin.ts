@@ -26,7 +26,10 @@ export default class UpgradablePlugin extends Plugin {
     }
 
     async loadSettings () {
-        this.settings = Object.assign({}, await this.loadData(), READONLY_SETTINGS);
+        // loadData() is untyped (any): what was saved, if anything, is these settings
+        const stored = (await this.loadData()) as Partial<CircuitSketcherSettings> | null;
+
+        this.settings = Object.assign({}, stored, READONLY_SETTINGS);
 
         const manifestVersion = this.manifest.version;
         const storedVersion = this.settings.dataVersion || "0.0.0";

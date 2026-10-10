@@ -21,16 +21,16 @@ export class CircuitSketcherSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl("h3", {text: "Circuit Sketcher Plugin"});
+        new Setting(containerEl).setName("Circuit Sketcher Plugin").setHeading();
 
         new Setting(containerEl)
             .setName("Version")
             .setDesc("Current plugin version")
             .addText(text => text.setValue(this.plugin.manifest.version).setDisabled(true));
 
-        containerEl.createEl("div", {cls: "setting-item-divider"});
+        containerEl.createDiv({cls: "setting-item-divider"});
 
-        containerEl.createEl("h3", {text: "Library"});
+        new Setting(containerEl).setName("Library").setHeading();
         new Setting(containerEl)
             .setDesc("The Circuit Sketcher library will allow you to save any circuit element custom design you create and make it available throughout any .circuit-sketcher file.");
 
@@ -39,9 +39,9 @@ export class CircuitSketcherSettingTab extends PluginSettingTab {
             .setDesc(`The Circuit Sketcher library will be stored at: vault_root/${this.plugin.settings.libraryPath}`)
             .addText(text => text.setValue(this.plugin.settings.libraryPath).setDisabled(true));
 
-        containerEl.createEl("div", {cls: "setting-item-divider"});
+        containerEl.createDiv({cls: "setting-item-divider"});
 
-        containerEl.createEl("h3", {text: "Cache"});
+        new Setting(containerEl).setName("Cache").setHeading();
 
         new Setting(containerEl)
             .setDesc("The Circuit Sketcher cache stores generated circuit images and data to improve performance and reduce redundant computations. " +

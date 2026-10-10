@@ -8,6 +8,7 @@
 import React, {Suspense, useEffect, useState} from "react";
 import "./App.scss";
 import {DrawBoardProps} from "../DrawBoard/DrawBoard";
+import {reportFailure} from "../../utils/utils";
 
 
 export const App = (props: DrawBoardProps) => {
@@ -22,10 +23,12 @@ export const App = (props: DrawBoardProps) => {
     );
 
     useEffect(() => {
-        import("../DrawBoard").then(module => {
-            setDrawBoard(() => module.DrawBoard);
-            setIsLoaded(true);
-        });
+        import("../DrawBoard")
+            .then(module => {
+                setDrawBoard(() => module.DrawBoard);
+                setIsLoaded(true);
+            })
+            .catch(reportFailure("load the canvas"));
     }, []);
 
     if (!isLoaded || !DrawBoard) {
