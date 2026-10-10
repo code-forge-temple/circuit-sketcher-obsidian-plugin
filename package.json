@@ -1,6 +1,6 @@
 {
     "name": "circuit-sketcher-obsidian-plugin",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "main": "main.js",
     "author": "Code Forge Temple",
     "license": "GPL",
@@ -12,7 +12,7 @@
     },
     "keywords": [],
     "dependencies": {
-        "circuit-sketcher-core": "github:code-forge-temple/circuit-sketcher-core",
+        "circuit-sketcher-core": "github:code-forge-temple/circuit-sketcher-core#semver:^1.6.2",
         "obsidian": "^1.7.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"

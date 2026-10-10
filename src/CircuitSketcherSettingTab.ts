@@ -21,8 +21,7 @@ export class CircuitSketcherSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        new Setting(containerEl).setName("Circuit Sketcher Plugin").setHeading();
-
+        // no heading with the plugin's name: Obsidian already shows it as the tab's title
         new Setting(containerEl)
             .setName("Version")
             .setDesc("Current plugin version")
