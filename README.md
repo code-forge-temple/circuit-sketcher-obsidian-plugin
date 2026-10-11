@@ -25,6 +25,7 @@
 - Save and load circuit designs.
 - Customizable component library, organized in groups and subgroups, with the published components one `Sync...` away.
 - Rotate circuit nodes, zoom and pan the canvas.
+- Save the whole circuit as a PNG image.
 - Responsive design with automatic resizing.
 - **Embed circuit diagrams in notes:** Reference `.circuit-sketcher` files in your notes (e.g., by dragging and dropping the file into a note). In read mode, an image of the circuit will be displayed automatically.
 
@@ -55,6 +56,7 @@ or
     - Connections between circuit nodes can be made by dragging and dropping one port to the destination port (if it is a compatible port). You can delete a connection by selecting it and then pressing the Delete key.
     - You can drag the entire circuit by holding the mouse scroll button and moving the mouse.
     - You can zoom with the mouse wheel (around the mouse pointer), or with the `+` and `-` buttons in the bottom-right corner of the canvas. The square button below them goes back to 100% and centers the circuit. The zoom is saved with the file.
+    - To save the whole circuit as a picture, right-click on the canvas and select `Save As Image`. You get `circuit.png`: the entire circuit at 100% on a transparent background, whatever part of it is in view.
 
 A short video tutorial on how to use the plugin:
 
