@@ -1,0 +1,35 @@
+/************************************************************************
+ *    Copyright (C) 2026 Code Forge Temple                              *
+ *    This file is part of circuit-sketcher-obsidian-plugin project.    *
+ *    Licensed under the GNU General Public License v3.0.               *
+ *    See the LICENSE file in the project root for more information.    *
+ ************************************************************************/
+
+.circuit-sketcher-embed {
+    cursor: pointer;
+
+    img {
+        max-width: 100%;
+    }
+
+    /* a canvas card can be wider than the circuit's shape: fit it whole, like Obsidian's images */
+    &.canvas-node-content img {
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.circuit-sketcher-embed-missing {
+    padding: var(--size-4-2);
+    color: var(--text-muted);
+
+    .circuit-sketcher-embed-icon {
+        margin-inline-end: var(--size-4-1);
+        vertical-align: middle;
+    }
+
+    .circuit-sketcher-embed-hint {
+        font-size: var(--font-smaller);
+        color: var(--text-faint);
+    }
+}

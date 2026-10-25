@@ -12,9 +12,13 @@ import icon from './assets/icon.svg';
 import {createIntermediaryFolders, dataUrlToUint8Array, hashPath} from "./utils/utils";
 import {CREATE_FILE_COMMAND, FILE_EXTENSION, NEW_LIBRARY_CONTENT} from "./constants/constants";
 import UpgradablePlugin from "./UpgradablePlugin";
+import {CircuitSketcherEmbed, EmbedImageSource} from "./CircuitSketcherEmbed";
 
 
-export default class CircuitSketcherPlugin extends UpgradablePlugin {
+export default class CircuitSketcherPlugin extends UpgradablePlugin implements EmbedImageSource {
+    // circuits embedded right now (canvas cards, Live Preview, hover previews), refreshed with each new picture
+    private readonly embeds = new Set<CircuitSketcherEmbed>();
+
     async onload () {
         await super.onload();
 
@@ -27,6 +31,16 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
 
         // Register `.circuit-sketcher` files to be visible in the file explorer
         this.registerExtensions([FILE_EXTENSION], CIRCUIT_VIEW_TYPE);
+
+        /* a `.circuit-sketcher` file embedded anywhere Obsidian embeds files shows its picture: canvas
+         * cards, Live Preview and hover previews (reading view has the post processor below). Through
+         * an API Obsidian doesn't publish - without it, those keep showing the file's name. */
+        const embedRegistry = this.app.embedRegistry;
+
+        if (typeof embedRegistry?.registerExtension === "function") {
+            embedRegistry.registerExtension(FILE_EXTENSION, (context, file) => new CircuitSketcherEmbed(context, file, this));
+            this.register(() => embedRegistry.unregisterExtension(FILE_EXTENSION));
+        }
 
         // Add a command to create a new `.circuit-sketcher` file
         this.addCommand({
@@ -69,13 +83,12 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
 
                 fileName = file.path;
 
-                const pngPath = `${this.settings.cachePath}/${hashPath(fileName)}`;
                 const link = createEl('a', {
                     cls: 'internal-link',
                     href: this.app.metadataCache.fileToLinktext(file, ctx.sourcePath, true),
                     attr: {'data-href': fileName},
                 });
-                const img = link.createEl('img', {attr: {src: this.app.vault.adapter.getResourcePath(pngPath)}});
+                const img = link.createEl('img', {attr: {src: this.cacheImageUrl(fileName)}});
 
                 // no cached image yet (the circuit hasn't been saved since the cache was emptied): no broken-image icon
                 img.onerror = () => {
@@ -137,5 +150,21 @@ export default class CircuitSketcherPlugin extends UpgradablePlugin {
 
         await createIntermediaryFolders(this.app.vault, cachePath);
         await this.app.vault.adapter.writeBinary(cachePath, fileContent);
+
+        this.embeds.forEach((embed) => {
+            if (embed.file.path === fileName) embed.refresh();
+        });
+    }
+
+    public cacheImageUrl (filePath: string): string {
+        return this.app.vault.adapter.getResourcePath(`${this.settings.cachePath}/${hashPath(filePath)}`);
+    }
+
+    public watchEmbed (embed: CircuitSketcherEmbed): void {
+        this.embeds.add(embed);
+    }
+
+    public unwatchEmbed (embed: CircuitSketcherEmbed): void {
+        this.embeds.delete(embed);
     }
 }

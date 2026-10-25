@@ -27,7 +27,7 @@
 - Rotate circuit nodes, zoom and pan the canvas.
 - Save the whole circuit as a PNG image.
 - Responsive design with automatic resizing.
-- **Embed circuit diagrams in notes:** Reference `.circuit-sketcher` files in your notes (e.g., by dragging and dropping the file into a note). In read mode, an image of the circuit will be displayed automatically.
+- **Embed circuit diagrams in notes and canvases:** Reference `.circuit-sketcher` files in your notes (e.g., by dragging and dropping the file into a note), or drop them onto a canvas. An image of the circuit is displayed automatically: in reading view, in Live Preview and on canvas cards.
 
 ## Installation
 
